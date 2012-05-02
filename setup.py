@@ -13,5 +13,5 @@ setup(
     packages=['london_start'],
     #data_files=data_files,
     scripts=['bin/london-start.py'],
-    #install_requires=install_requires,
+    install_requires=['pip','virtualenv'],
     )
