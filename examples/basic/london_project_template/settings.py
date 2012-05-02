@@ -21,13 +21,13 @@ DATABASES = {
             'engine': 'london.db.engines.MongoDB',
             'host': 'localhost',
             'port': 27017,
-            'name': 'database_name_to_replace',
+            'name': '%(database_name)s',
             }
         }
 
 MIDDLEWARE_CLASSES = (
         #'london.apps.seo.middleware.SEOMiddleware',
-        #'london.apps.debug.middleware.DebugMiddleware',
+        'london.apps.debug.middleware.DebugMiddleware',
         #'london.apps.sessions.middleware.SessionMiddleware',
         #'london.apps.auth.middleware.AuthMiddleware',
         #'london.apps.themes.middleware.ThemeMiddleware',
@@ -53,10 +53,10 @@ TEMPLATE_LOADERS = (
 INSTALLED_APPS = {
         'staticfiles': 'london.apps.staticfiles',
         'themes': 'london.apps.themes',
+        'debug': 'london.apps.debug',
         #'mailing': 'london.apps.mailing',
         #'cache': 'london.apps.cache',
         #'ajax': 'london.apps.ajax',
-        #'debug': 'london.apps.debug',
         #'seo': 'london.apps.seo',
         #'sessions': 'london.apps.sessions',
         #'sites': 'london.apps.sites',
@@ -72,4 +72,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(ROOT_PATH, 'static')
 UPLOADS_URL = '/static/uploads/'
 UPLOADS_ROOT = os.path.join(STATIC_ROOT, 'uploads')
+
+PRINT_TRACEBACK = True
 

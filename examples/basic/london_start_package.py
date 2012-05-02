@@ -25,12 +25,17 @@ import os
 def install(*args, **kwargs):
     start = LondonStart()
 
+    no_virtualenv = kwargs['no_virtualenv']
+
     # Asks for new project name
     if kwargs.get('project_name', None):
         project_name = kwargs['project_name']
     else:
         print('> Please inform the project name:')
         project_name = raw_input()
+
+    if not kwargs['database_name']:
+        kwargs['database_name'] = project_name
 
     # Asks for the version of London
     if kwargs.get('london_version', None):
@@ -44,7 +49,7 @@ def install(*args, **kwargs):
 
     # Basic paths
     project_dir = os.path.join(os.path.abspath(os.curdir), project_name)
-    root_dir = os.path.join(project_dir, 'root')
+    root_dir = os.path.join(project_dir, kwargs.get('project_dir', 'root'))
     bin_dir = os.path.join(project_dir, 'env', 'bin')
     pip_bin = os.path.join(bin_dir, 'pip')
 
@@ -62,17 +67,19 @@ def install(*args, **kwargs):
     os.chdir(project_dir)
 
     # Creates the new virtualenv box
-    if not os.path.exists(os.path.join(project_dir, 'env')):
+    if not no_virtualenv:
+        print('. Creating virtual environment...')
         import virtualenv
         virtualenv.create_environment('env')
 
     # Installs London
-    print('. Installing London framework...')
-    start.install_london(bin_dir, london_version)
+    if london_version != 'local':
+        print('. Installing London framework...')
+        start.install_london('' if no_virtualenv else bin_dir, london_version)
 
     # Installs optional packages
     print('. Installing optional packages...')
-    start.install_optional_dependencies(bin_dir)
+    start.install_optional_dependencies('' if no_virtualenv else bin_dir)
 
     if not project_exists:
         # Creates the new project folder from basic project template
@@ -81,14 +88,20 @@ def install(*args, **kwargs):
 
         # Creates basic template project
         print('. Creating basic project...')
-        start.create_basic_project(bin_dir, root_dir, tpl_dir=kwargs.get('tpl_dir', None))
+        macro_values = kwargs.copy()
+        start.create_basic_project(
+                '' if no_virtualenv else bin_dir,
+                root_dir,
+                tpl_dir=kwargs.get('tpl_dir', None),
+                macro_values=macro_values,
+                )
 
     # Updates dependencies
     print('. Updating needed packages')
-    start.update_dependencies(bin_dir, root_dir)
+    start.update_dependencies('' if no_virtualenv else bin_dir, root_dir)
 
     # Run the public service
     print('. Now you can try on the browser:    http://localhost:8000/')
     print('')
-    start.run_project_service(bin_dir, root_dir)
+    start.run_project_service('' if no_virtualenv else bin_dir, root_dir)
 

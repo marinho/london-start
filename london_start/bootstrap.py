@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import commands
+import pkg_resources
 
 
 class LondonStart:
@@ -13,7 +14,7 @@ class LondonStart:
     SETUPTOOLS_DIR = SETUPTOOLS_NAME.rsplit('.', 2)[0]
     LONDON_DEV_REPO = '-e git+git@github.com:mochii/london.git#egg=london'
     LONDON_BIN_DIR = os.path.dirname(os.path.abspath(__file__))
-    OPTIONAL_PACKAGES = ('tornado', 'pymongo', 'ipython')
+    OPTIONAL_PACKAGES = ('tornado', 'pymongo==2.1.1', 'ipython')
 
     @property
     def get_version_os(self):
@@ -21,28 +22,13 @@ class LondonStart:
 
     @property
     def TEMP_DIR(self):
-        if self.get_version_os == 'win32':
+        if self.get_version_os() == 'win32':
             return os.path.join(self.project_dir, 'tmp')
         return '/tmp/'
 
     def install_initial_dependencies(self, project_dir):
         self.project_dir = project_dir
         os.chdir(self.TEMP_DIR)
-
-        # setuptools
-        try:
-            import setuptools
-        except ImportError:
-            print('.. setuptools')
-            commands.getoutput('curl -s %s >%s%s' % (self.SETUPTOOLS_URL,
-                self.TEMP_DIR,
-                self.SETUPTOOLS_NAME))
-            os.chdir(self.TEMP_DIR)
-            commands.getoutput('tar xvfz ' + self.SETUPTOOLS_NAME)
-            os.chdir(os.path.join(self.TEMP_DIR, self.SETUPTOOLS_DIR))
-            commands.getoutput('sudo python setup.py install')
-            if self.get_version_os == 'win32':
-                os.rmdir(self.TEMP_DIR)
 
         # pip
         try:
@@ -62,7 +48,13 @@ class LondonStart:
         pip_bin = os.path.join(bin_dir, 'pip')
 
         for pkg in packages:
-            commands.getoutput('%s install -I %s' % (pip_bin, pkg))
+            try:
+                simple_pkg = pkg_resources.Requirement.parse(pkg).project_name
+                __import__(simple_pkg)
+                print('.. %s: already installed' % pkg)
+            except (ImportError, ValueError):
+                status, output = commands.getstatusoutput('%s install -I %s' % (pip_bin, pkg)) # -I ignores installed package
+                print('.. %s: %s'%(pkg, 'not installed (error)' if status else 'installed'))
 
     def valid_london_version(self, version):
         return bool(version.strip())
@@ -94,7 +86,9 @@ class LondonStart:
         london_path = self.get_london_dir(bin_dir)
         return os.path.join(london_path, 'project_templates', name)
 
-    def create_basic_project(self, bin_dir, root_dir, tpl_dir=None):
+    def create_basic_project(self, bin_dir, root_dir, tpl_dir=None, macro_values=None):
+        macro_values = macro_values or {}
+
         if not tpl_dir:
             tpl_dir = self.get_project_template_dir(bin_dir, 'default')
 
@@ -108,7 +102,20 @@ class LondonStart:
 
             # Copies the files into destination folder
             for filename in files:
-                if not filename.startswith('.') and not filename.endswith('.pyc'):
+                # Special case: settings.py
+                if not short_folder and filename == 'settings.py':
+                    # Reading origin file
+                    fp = file(os.path.join(folder, filename))
+                    content = fp.read()
+                    fp.close()
+
+                    # Saving destination file
+                    fp = file(os.path.join(dest_folder, filename), 'w')
+                    fp.write(content % macro_values) # Replacing macros for respective values
+                    fp.close()
+
+                # Everything else
+                elif not filename.startswith('.') and not filename.endswith('.pyc'):
                     shutil.copyfile(os.path.join(folder, filename), os.path.join(dest_folder, filename))
 
     def run_project_service(self, bin_dir, root_dir, service='public'):

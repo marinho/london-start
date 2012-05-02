@@ -12,6 +12,8 @@ from london.apps.staticfiles.views import url_serve
 
 url_patterns = patterns('public.views',
         (r'^$', 'home', {}, 'home'),
+        #(r'^admin/', include(admin.site.urls)),
+        #(r'^ajax/', include(ajax.site.urls)),
 )
 
 if settings.LOCAL:
