@@ -1,0 +1,11 @@
+Next Steps
+==========
+
+The current version already has our main goals for this tool, but certainly new needs will apear in the time being.
+
+A few improvements can happen in future:
+
+- Auto-update of LondonStart when called
+- GUI version for MacOSX, Linux and Windows
+- Hability to prepare database schema and fixture files
+

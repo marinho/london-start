@@ -1,0 +1,16 @@
+Backward Incompatible Changes
+=============================
+
+This section exists to keep users informed about things that have been deprecated in favour of design improvements.
+
+Since LondonStart was refactored as a separated tool, no changes were made to make it incompatible with previous versions.
+However, a previous version existed as part of the framework as the files **bin/london-start.py** and those in
+**london/start/**.
+
+The main difference between the old and the refactored versions is that the old worked as basic intallation script in
+**bootstrap.py**'s class **LondonStart** was used by another script in order to install a basic project under London's
+directives and then extended to additional functions (i.e. installing and using LondonCMS).
+
+This version changed the way to work with packages, which are .zip files including their own installation script (using
+that same class with few changes), its own project template, able to be downloaded by a repository in London's official
+website.
