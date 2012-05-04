@@ -1,0 +1,8 @@
+Authors
+=======
+
+LondonStart was created and is maintained by the **London Web Framework** team.
+
+- **Marinho Brandão** <marinho at gmail dot com>
+- **Thiago Avelino** <thiagoavelinoster at gmail dot com>
+
