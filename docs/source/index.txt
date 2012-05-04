@@ -3,17 +3,17 @@ Overview
 
 LondonStart is a tool to create new projects to run with **London Web Framework**. Its basic workflow is simple like this:
 
-1. Install LondonStart
+1. Install LondonStart::
 
-    pip install london-start
+    $ pip install london-start
 
-2. Run it
+2. Run it::
 
-    london-start
+    $ london-start
 
-Alternative:
+Alternative::
 
-    london-start PACKAGE_NAME
+    $ london-start PACKAGE_NAME
 
 and replace PACKAGE_NAME by a package .zip file, package URL or package name found in the official repository. Default is "basic".
 

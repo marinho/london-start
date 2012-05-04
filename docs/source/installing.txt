@@ -6,7 +6,7 @@ LondonStart is very easy to be installed. Follow one of the ways below:
 Option 1. Running installer script via curl
 -------------------------------------------
 
-The easiest way to install LondonStart is calling a URL via curl, like this:
+The easiest way to install LondonStart is calling a URL via curl, like this::
 
     $ curl -s http://londonframework.org/install.sh | sh
 
@@ -15,11 +15,11 @@ That needs only Python installed to work. Pip will be installed if not found in 
 Option 2. Installing via pip
 ----------------------------
 
-You can also install it using **pip** or **easy_install**, like below:
+You can also install it using **pip** or **easy_install**, like below::
 
     $ pip install london-start
 
-or
+or::
 
     $ easy_install london-start
 
@@ -28,7 +28,7 @@ That is very similar to the option 1, but needs pip or easy_install to work.
 Option 3. Installing development version from repository
 --------------------------------------------------------
 
-Finally you can clone our development version from Github and install it:
+Finally you can clone our development version from Github and install it::
 
     $ git clone git@github.com:mochii/london-start.git
     $ cd london-start
