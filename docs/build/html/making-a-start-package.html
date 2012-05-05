@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Making a Start Package &mdash; LondonStart Documentation 0.1-stable documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1-stable',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="LondonStart Documentation 0.1-stable documentation" href="index.html" />
+    <link rel="next" title="Submiting a Package" href="submiting-package.html" />
+    <link rel="prev" title="Installing" href="installing.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="submiting-package.html" title="Submiting a Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installing.html" title="Installing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">LondonStart Documentation 0.1-stable documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="making-a-start-package">
+<h1>Making a Start Package<a class="headerlink" href="#making-a-start-package" title="Permalink to this headline">¶</a></h1>
+<p>A start package is a ZIP file containing the following structure:</p>
+<ul class="simple">
+<li><strong>london_start_package.py</strong> - Python file with script for installing</li>
+<li><strong>london_project_template</strong> - A directory with the project files and directories (i.e. settings.py, templates, public service, etc.)</li>
+</ul>
+<div class="section" id="london-start-package-py">
+<h2>london_start_package.py<a class="headerlink" href="#london-start-package-py" title="Permalink to this headline">¶</a></h2>
+<p>LonndonStart expects this file contains a method <strong>install(*args, **kwargs)</strong> to call. Usually that method will create an
+instance of class <strong>london_start.bootstrap.LondonStart</strong>, will ask a few input questions, in order to create project&#8217;s directory,
+virtual environment, installing dependencies, preparing database, etc.</p>
+<p>The argument <strong>**kwargs</strong> comes with the following key/values:</p>
+<ul class="simple">
+<li><strong>project_name</strong> - from <strong>&#8211;project-name</strong>, with the project name to create</li>
+<li><strong>database_name</strong> - from <strong>&#8211;database-name</strong>, with the database name to use</li>
+<li><strong>london_version</strong> - from <strong>&#8211;london-version</strong>, with the London version. Can be &#8220;stable&#8221; (for latest stable version), &#8220;dev&#8221;, &#8220;local&#8221; or the version number.</li>
+<li><strong>no_virtualenv</strong> - from <strong>&#8211;no-virtualenv</strong>, which if True, ignores virtualenv creation and use current Python environment</li>
+<li><strong>project_dir</strong> - from <strong>&#8211;project-dir</strong>, with the temporary project source code root directory to be inside project&#8217;s base directory</li>
+<li><strong>package_host</strong> - from <strong>&#8211;package-host</strong>, with the package repository hostname (if needs to download another package)</li>
+<li><strong>project_template_dir</strong> - the project template directory path (usually &#8220;london_project_template&#8221; inside the package)</li>
+</ul>
+<p>Here goes an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">london_start.bootstrap</span> <span class="kn">import</span> <span class="n">LondonStart</span>
+
+<span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c"># This case will install the default configuration, additionally installing reportlab, geraldo and pillow packages</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">LondonStart</span><span class="p">(</span><span class="n">additional_packages</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;reportlab&#39;</span><span class="p">,</span><span class="s">&#39;geraldo&#39;</span><span class="p">,</span><span class="s">&#39;pillow&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c"># Runs the default sequence to create directories, virtualenv, install dependencies, etc.</span>
+    <span class="n">start</span><span class="o">.</span><span class="n">run_default_sequence</span><span class="p">()</span>
+
+    <span class="c"># Run the public service</span>
+    <span class="n">start</span><span class="o">.</span><span class="n">run_project_service</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The method <strong>run_default_sequence()</strong> calls the following sequence of LondonStart instance methods:</p>
+<ul class="simple">
+<li><strong>check_params()</strong> - Checks the given params before to start</li>
+<li><strong>makedirs()</strong> - Creates new project directory</li>
+<li><strong>install_initial_dependencies()</strong> - Installing dependencies</li>
+<li><strong>create_virtualenv()</strong> - Creates the new virtualenv box</li>
+<li><strong>install_london()</strong> - Installs London</li>
+<li><strong>install_optional_dependencies()</strong> - Installs optional packages</li>
+<li><strong>create_basic_project()</strong> - Creates basic template project</li>
+<li><strong>update_dependencies()</strong> - Updates dependencies</li>
+</ul>
+</div>
+<div class="section" id="london-project-template">
+<h2>london_project_template<a class="headerlink" href="#london-project-template" title="Permalink to this headline">¶</a></h2>
+<p>This directory is just a normal project, with a simple difference: <strong>settings.py</strong> receives a few macros, which makes it
+possible to receive basic values inside.</p>
+<p>The macro values available for <strong>settings.py</strong> are the following ones:</p>
+<ul class="simple">
+<li>project_name</li>
+<li>london_version</li>
+<li>no_virtualenv</li>
+<li>package_host</li>
+<li>project_template_dir</li>
+<li>database_name</li>
+<li>root_dir</li>
+<li>project_dir</li>
+<li>bin_dir</li>
+<li>pip_bin</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Making a Start Package</a><ul>
+<li><a class="reference internal" href="#london-start-package-py">london_start_package.py</a></li>
+<li><a class="reference internal" href="#london-project-template">london_project_template</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installing.html"
+                        title="previous chapter">Installing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="submiting-package.html"
+                        title="next chapter">Submiting a Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/making-a-start-package.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="submiting-package.html" title="Submiting a Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installing.html" title="Installing"
+             >previous</a> |</li>
+        <li><a href="index.html">LondonStart Documentation 0.1-stable documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Marinho Brandao.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

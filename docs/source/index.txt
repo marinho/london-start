@@ -26,6 +26,8 @@ Content
     :maxdepth: 1
 
     installing
+    making-a-start-package
+    submiting-package
     backward-incompatible-changes
     next-steps
     authors

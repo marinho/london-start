@@ -28,14 +28,16 @@ option_list = [
         help='Inform the project name to create.'),
     make_option('--database-name', action='store', dest='database_name', default=None,
         help='Inform the database name to use.'),
-    make_option('--london-version', action='store', dest='london_version', default='stable',
+    make_option('--london-version', action='store', dest='london_version', default=None,
         help='Inform the London version. Can be "stable" (for latest stable version), "dev", "local" or the version number.'),
     make_option('--no-virtualenv', action='store_true', dest='no_virtualenv', default=False,
         help='If set, ignores virtualenv creation and use current Python environment.'),
-    make_option('--project-dir', action='store', dest='project_dir', default='root',
-        help='Inform the project source code root directory to be inside project\'s base directory.'),
+    make_option('--project-dir', action='store', dest='project_dir', default='project',
+        help='Inform the project source code directory to be inside project\'s base directory.'),
     make_option('--package-host', action='store', dest='package_host', default='londonframework.org', # for testing: localhost:8000
         help='Inform the package repository hostname.'),
+    make_option('--verbosity', action='store', dest='verbosity', default='1',
+        help='0 for not printing, 1 to print messages on output.'),
     ]
 
 class BasicOptionParser(OptionParser):
@@ -122,8 +124,8 @@ def main():
         package = sys.argv[1]
     else:
         package = 'basic'
-    mod, tpl_dir = get_package(option.package_host, package)
-    kwargs['tpl_dir'] = tpl_dir
+    mod, project_template_dir = get_package(options.package_host, package)
+    kwargs['project_template_dir'] = project_template_dir
 
     # Run package's install function
     mod.install(*args, **kwargs)

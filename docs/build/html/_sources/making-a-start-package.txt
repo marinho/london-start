@@ -1,0 +1,71 @@
+Making a Start Package
+======================
+
+A start package is a ZIP file containing the following structure:
+
+- **london_start_package.py** - Python file with script for installing
+- **london_project_template** - A directory with the project files and directories (i.e. settings.py, templates, public service, etc.)
+
+london_start_package.py
+-----------------------
+
+LonndonStart expects this file contains a method **install(\*args, \*\*kwargs)** to call. Usually that method will create an
+instance of class **london_start.bootstrap.LondonStart**, will ask a few input questions, in order to create project's directory,
+virtual environment, installing dependencies, preparing database, etc.
+
+The argument **\*\*kwargs** comes with the following key/values:
+
+- **project_name** - from **--project-name**, with the project name to create
+- **database_name** - from **--database-name**, with the database name to use
+- **london_version** - from **--london-version**, with the London version. Can be "stable" (for latest stable version), "dev", "local" or the version number.
+- **no_virtualenv** - from **--no-virtualenv**, which if True, ignores virtualenv creation and use current Python environment
+- **project_dir** - from **--project-dir**, with the temporary project source code root directory to be inside project\'s base directory
+- **package_host** - from **--package-host**, with the package repository hostname (if needs to download another package)
+- **project_template_dir** - the project template directory path (usually "london_project_template" inside the package)
+
+Here goes an example::
+
+    #!/usr/bin/env python
+    from london_start.bootstrap import LondonStart
+
+    def install(*args, **kwargs):
+        # This case will install the default configuration, additionally installing reportlab, geraldo and pillow packages
+        start = LondonStart(additional_packages=['reportlab','geraldo','pillow'], **kwargs)
+
+        # Runs the default sequence to create directories, virtualenv, install dependencies, etc.
+        start.run_default_sequence()
+
+        # Run the public service
+        start.run_project_service()
+
+The method **run_default_sequence()** calls the following sequence of LondonStart instance methods:
+
+- **check_params()** - Checks the given params before to start
+- **makedirs()** - Creates new project directory
+- **install_initial_dependencies()** - Installing dependencies
+- **create_virtualenv()** - Creates the new virtualenv box
+- **install_london()** - Installs London
+- **install_optional_dependencies()** - Installs optional packages
+- **create_basic_project()** - Creates basic template project
+- **update_dependencies()** - Updates dependencies
+
+london_project_template
+-----------------------
+
+This directory is just a normal project, with a simple difference: **settings.py** receives a few macros, which makes it
+possible to receive basic values inside.
+
+The macro values available for **settings.py** are the following ones:
+
+- project_name
+- london_version
+- no_virtualenv
+- package_host
+- project_template_dir
+- database_name
+- root_dir
+- project_dir
+- bin_dir
+- pip_bin
+
+
