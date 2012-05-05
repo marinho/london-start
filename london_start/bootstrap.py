@@ -126,7 +126,8 @@ class LondonStart(object):
         os.chdir(self.root_dir)
 
     def create_virtualenv(self):
-        if self.no_virtualenv or os.listdir(os.path.join(self.root_dir, 'env')):
+        env_dir = os.path.join(self.root_dir, 'env')
+        if self.no_virtualenv or (os.path.exists(env_dir) and os.listdir(env_dir)):
             return
 
         if self.verbosity != '0':
