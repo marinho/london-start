@@ -6,14 +6,14 @@ body {
 h1 {
     background: #eee;
     color: #333;
-    padding: 10px;
-    margin: 0 0 10px 0;
-    border-bottom: 2px solid silver;
+    padding: 0.35em;
+    margin: 0 0 0.35em 0;
+    border-bottom: 0.07em solid silver;
     font-family: 'Kaushan Script', cursive, arial;
     font-size: 30pt;
 }
 
 #content {
-    margin: 20px;
+    margin: 0.7em;
 }
 

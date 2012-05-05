@@ -5,7 +5,7 @@ LondonStart is a tool to create new projects to run with **London Web Framework*
 
 1. Install LondonStart::
 
-    $ pip install london-start
+    $ pip install -e git+git@github.com:mochii/london-start.git#egg=london_start
 
 2. Run it::
 
