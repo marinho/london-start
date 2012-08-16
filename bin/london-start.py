@@ -104,6 +104,7 @@ def get_package(package_host, package_uri):
                 tpl_path = os.path.join(TEMP_DIR, 'project_template')
                 if not os.path.exists(tpl_path): os.makedirs(tpl_path)
                 extract.extractall(tpl_path) # FIXME: doesn't extract directories
+                tpl_path = os.path.join(tpl_path, 'london_project_template')
             else:
                 tpl_path = os.path.join(os.path.abspath(root_path), 'london_project_template')
 
