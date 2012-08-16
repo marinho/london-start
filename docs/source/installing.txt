@@ -30,7 +30,7 @@ Option 3. Installing development version from repository
 
 Finally you can clone our development version from Github and install it::
 
-    $ git clone git@github.com:mochii/london-start.git
+    $ git clone git://github.com/london-framework/london-start.git
     $ cd london-start
     $ sudo python setup.py install
 
