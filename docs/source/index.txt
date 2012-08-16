@@ -9,11 +9,11 @@ LondonStart is a tool to create new projects to run with **London Web Framework*
 
 2. Run it::
 
-    $ london-start
+    $ london-start.py
 
 Alternative::
 
-    $ london-start PACKAGE_NAME
+    $ london-start.py PACKAGE_NAME
 
 and replace PACKAGE_NAME by a package .zip file, package URL or package name found in the official repository. Default is "basic".
 
